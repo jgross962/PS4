@@ -4,38 +4,67 @@
 
 rm(list = ls())
 
+validDoors = as.integer(c(1,2,3))
 
 
 # S4 Methodology
 
 #Create door class, that accepts numeric as input
 setClass(
-  Class = "Door",
+  Class = "door",
   representation = representation (
-    DoorNumber = "numeric"
+    chosenDoor = "integer",
+    carDoor = "integer",
+    switch = "logical",
+    winner = "logical"
   ),
   prototype = prototype(
-    DoorNumber = c()
+    chosenDoor = c(),
+    carDoor = as.integer(floor(runif(1,1,4))),
+    switch = FALSE,
+    winner = FALSE
     
   )
 )
 #Check User has properly created door, by checking class of input
-setValidity("Door",function(object){
-  if (class(object@DoorNumber) != "numeric"){
-    return("@Door is not a valid value")
+setValidity("door",function(object){
+  if (class(object@chosenDoor) != "integer" | (!x %in% validDoors) ){
+    return("@door is not a valid value")
   }
 })
 
 #Check validity when a new door is created
-setMethod("initialize","Door", function(.Object,...){
+setMethod("initialize","door", function(.Object,...){
   value = callNextMethod()
   validObject(value)
   return(value)
 })
 
 #Test - create a working door and a not working door
-goodDoor = new("Door",DoorNumber = 2)
+
+goodDoor1 = new("door",chosenDoor = as.integer(2))
+goodDoor1
+
+goodDoor = new("door",chosenDoor = as.integer(2), switch = FALSE)
+
+
 badDoor = new("Door", DoorNumber = "test")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #Create Generic PlayGame Function that take's users door as input
 setGeneric("PlayGame", 
