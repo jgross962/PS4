@@ -2,34 +2,50 @@
 # Pol Sci 5625
 #PS 4
 
+## Geting Started
+# Fix Code
+
+myFunction = function(doorthing, doorthing2){
+
+}
+
+##
+
+
 rm(list = ls())
 
-validDoors = as.integer(c(1,2,3))
 
 
-# S4 Methodology
+## Part 1
+# S4 Door Object
 
-#Create door class, that accepts numeric as input
+#Create door class, that accepts integer as input
+
+
 setClass(
   Class = "door",
   representation = representation (
     chosenDoor = "integer",
     carDoor = "integer",
-    switch = "logical",
-    winner = "logical"
+    switch = "logical"
   ),
   prototype = prototype(
     chosenDoor = c(),
-    carDoor = as.integer(floor(runif(1,1,4))),
-    switch = FALSE,
-    winner = FALSE
-    
+    carDoor = c(),
+    switch = NULL
   )
 )
+winner = NULL
+win = NULL
+
+
 #Check User has properly created door, by checking class of input
+
 setValidity("door",function(object){
-  if (class(object@chosenDoor) != "integer" | (!x %in% validDoors) ){
-    return("@door is not a valid value")
+  if (class(object@chosenDoor) != "integer" | (!object@chosenDoor %in% as.integer(c(1,2,3))) ){
+    if(class(object@carDoor) != "integer" | (!object@carDoor %in% as.integer(c(1,2,3))) ){
+     return("@door is not a valid value")
+    }
   }
 })
 
@@ -42,52 +58,58 @@ setMethod("initialize","door", function(.Object,...){
 
 #Test - create a working door and a not working door
 
+new("door",as.integer(2))
+new("door",chosenDoor = as.integer(2))
 goodDoor1 = new("door",chosenDoor = as.integer(2))
 goodDoor1
 
 goodDoor = new("door",chosenDoor = as.integer(2), switch = FALSE)
 
 
-badDoor = new("Door", DoorNumber = "test")
+goodDoor = new("door",chosenDoor = as.integer(2), carDoor = as.integer(1), switch = FALSE)
 
+## Part 2
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#Create Generic PlayGame Function that take's users door as input
-setGeneric("PlayGame", 
-           function(object = "Door"){
+# Create Generic Function Play Game
+setGeneric("PlayGame",
+           function(object = "door"){
              standardGeneric("PlayGame")
            })
-
-#Create plyGame method -- randomly picks value 1 2 or 3 and compares against user value
-setMethod("PlayGame","Door",
+winner= logical()
+#Create Method for PlayGame for Door Objecct
+setMethod("PlayGame","door",
           function(object){
-            #Create the winning door with random value
-            WinningDoor = new("Door",DoorNumber = floor(runif(1,1,4)))
-            #Print Appropriate Output
-            if(WinningDoor@DoorNumber == object@DoorNumber){
-              return("Congratulations You've Won A Car")
+            #Randomly Choose (and overwrite) winning Door #
+            object@carDoor = sample(3,1)
+            #Randomly pick inital choosen door
+            InitialChosenDoor =sample(3,1)
+
+            if (object@switch==FALSE){
+              #If switch is false, final chosen door is same as initial chosen door
+              object@chosenDoor = InitialChosenDoor
             }else{
-              return("I'm Sorry You Didn't Win")
+              # If switch true, remove a door that is not the car door
+              RemoveDoorChoices = (c(1,2,3)[-object@carDoor][-InitialChosenDoor])
+              RemoveDoor = RemoveDoorChoices[sample(length(RemoveDoorChoices),1)]
+              AfterSwitchDoorChoices = c(1,2,3)[-RemoveDoor]
+              object@chosenDoor = AfterSwitchDoorChoices[sample(length(AfterSwitchDoorChoices),1)]
             }
+            if (object@chosenDoor == object@carDoor){
+              winner<<- TRUE
+              return(TRUE)
+            } else{
+              winner <<- FALSE
+              return(FALSE)
+            }
+
           })
 
-#Test PlayGame Method multiple times to ensure you win sometimes
 PlayGame(goodDoor)
-PlayGame(goodDoor)
-PlayGame(goodDoor)
-PlayGame(goodDoor)
-PlayGame(goodDoor)
+
+
+
+
+
+
+
+
