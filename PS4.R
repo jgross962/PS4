@@ -19,9 +19,10 @@ rm(list = ls())
 ## Part 1
 # S4 Door Object
 
-#Create door class, that accepts integer as input
-
-
+#Create door class, that accepts integer inputs for doors and logical for switch
+# @choosenDoor = door that the player picks
+# @carDorr = the winning door
+# @switch = boolean to determine whether or not a player switches doors
 setClass(
   Class = "door",
   representation = representation (
@@ -35,8 +36,9 @@ setClass(
     switch = NULL
   )
 )
-winner = NULL
-win = NULL
+
+# Create empty winner Logical-- will be overwritten after playing game
+winner= logical()
 
 
 #Check User has properly created door, by checking class of input
@@ -57,16 +59,8 @@ setMethod("initialize","door", function(.Object,...){
 })
 
 #Test - create a working door and a not working door
-
-new("door",as.integer(2))
-new("door",chosenDoor = as.integer(2))
-goodDoor1 = new("door",chosenDoor = as.integer(2))
-goodDoor1
-
-goodDoor = new("door",chosenDoor = as.integer(2), switch = FALSE)
-
-
 goodDoor = new("door",chosenDoor = as.integer(2), carDoor = as.integer(1), switch = FALSE)
+
 
 ## Part 2
 
@@ -75,7 +69,7 @@ setGeneric("PlayGame",
            function(object = "door"){
              standardGeneric("PlayGame")
            })
-winner= logical()
+
 #Create Method for PlayGame for Door Objecct
 setMethod("PlayGame","door",
           function(object){
@@ -88,12 +82,17 @@ setMethod("PlayGame","door",
               #If switch is false, final chosen door is same as initial chosen door
               object@chosenDoor = InitialChosenDoor
             }else{
-              # If switch true, remove a door that is not the car door
-              RemoveDoorChoices = (c(1,2,3)[-object@carDoor][-InitialChosenDoor])
+              # If switch true, remove a door that is not the car door or Iniitally Chosen Door
+              RemoveDoorChoices = c(1,2,3)[-which(object@carDoor==c(1,2,3))]
+              RemoveDoorChoices  =RemoveDoorChoices[-which(InitialChosenDoor==RemoveDoorChoices)]
               RemoveDoor = RemoveDoorChoices[sample(length(RemoveDoorChoices),1)]
-              AfterSwitchDoorChoices = c(1,2,3)[-RemoveDoor]
+
+              #Determine Which Doors are Remaining after removing one
+              AfterSwitchDoorChoices = c(1,2,3)[-which(RemoveDoor == c(1,2,3))]
+              # Determine final chosen door, by randomly choosing between remaining choices
               object@chosenDoor = AfterSwitchDoorChoices[sample(length(AfterSwitchDoorChoices),1)]
             }
+            # Determine if Player won
             if (object@chosenDoor == object@carDoor){
               winner<<- TRUE
               return(TRUE)
@@ -104,12 +103,7 @@ setMethod("PlayGame","door",
 
           })
 
+#Test Method
 PlayGame(goodDoor)
-
-
-
-
-
-
-
-
+PlayGame(goodDoor)
+PlayGame(goodDoor)
