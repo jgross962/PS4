@@ -3,17 +3,35 @@
 #PS 4
 
 ## Geting Started
+
 # Fix Code
+# # Originally Provided Code
+# myFunction = function(doorthing, doorthing2){
+#  doorthing1 = doorthing2 = sample(3,1)
+#  if (doorthing1 == doorthing2){x =TRUE} else{x==FALSE}
+#  x
+# }
+# myFunction(sample(1:3,1),sample(1:3,1))
 
-myFunction = function(doorthing, doorthing2){
-
+# Modified/Improved Code
+# CheckDoorEquality Function will check if two doors are the same door numbers
+# @chosenDoor is the door that the user has picked
+# @carDoor is the door that holds the car
+CheckDoorEquality = function(chosenDoor, carDoor){
+  #Check Equality
+  #Should return true if values are equal, and false if not
+  if(chosenDoor == carDoor){
+    return(TRUE)
+  }else{
+    return(FALSE)
+  }
 }
+CheckDoorEquality(sample(1:3,1),sample(1:3,1))
 
-##
 
+## Moving On
 
 rm(list = ls())
-
 
 
 ## Part 1
@@ -21,7 +39,7 @@ rm(list = ls())
 
 #Create door class, that accepts integer inputs for doors and logical for switch
 # @choosenDoor = door that the player picks
-# @carDorr = the winning door
+# @carDoor = the winning door
 # @switch = boolean to determine whether or not a player switches doors
 setClass(
   Class = "door",
@@ -41,8 +59,7 @@ setClass(
 winner= logical()
 
 
-#Check User has properly created door, by checking class of input
-
+#Check if user has properly created door, by checking class of input
 setValidity("door",function(object){
   if (class(object@chosenDoor) != "integer" | (!object@chosenDoor %in% as.integer(c(1,2,3))) ){
     return("@door is not a valid value")
@@ -59,7 +76,7 @@ setMethod("initialize","door", function(.Object,...){
   return(value)
 })
 
-#Test - create a working doorw and a not working doors
+#Test - create a working door and a not working doors
 goodDoorFalse = new("door",chosenDoor = as.integer(2), carDoor = as.integer(1), switch = FALSE)
 goodDoorTrue = new("door",chosenDoor = as.integer(1), carDoor = as.integer(2), switch = TRUE)
 
@@ -73,7 +90,6 @@ setGeneric("PlayGame",
            function(object = "door"){
              standardGeneric("PlayGame")
            })
-
 
 #Create Method for PlayGame for Door Objecct
 setMethod("PlayGame","door",
@@ -139,7 +155,7 @@ PlayGame(goodDoorTrue)
 noSwitchDoor = new("door",chosenDoor = as.integer(1), carDoor = as.integer(1), switch = FALSE)
 noSwtichAllDoors = replicate(1000,noSwitchDoor)
 NoSwitchOutcomes = sapply(noSwtichAllDoors,PlayGame)
-table(NoSwitchOutcomes) #odds about 1/3-2/3
+table(NoSwitchOutcomes) #odds about 1/3 vs 2/3
 
 
 # Simulate with Switch = True
