@@ -62,13 +62,14 @@ setMethod("initialize","door", function(.Object,...){
 goodDoor = new("door",chosenDoor = as.integer(2), carDoor = as.integer(1), switch = FALSE)
 
 
-## Part 2
+## Part 2 -- Play Game Function
 
 # Create Generic Function Play Game
 setGeneric("PlayGame",
            function(object = "door"){
              standardGeneric("PlayGame")
            })
+
 
 #Create Method for PlayGame for Door Objecct
 setMethod("PlayGame","door",
@@ -92,18 +93,27 @@ setMethod("PlayGame","door",
               # Determine final chosen door, by randomly choosing between remaining choices
               object@chosenDoor = AfterSwitchDoorChoices[sample(length(AfterSwitchDoorChoices),1)]
             }
+
+
+
             # Determine if Player won
             if (object@chosenDoor == object@carDoor){
               winner<<- TRUE
-              return(TRUE)
+              #return(TRUE)
             } else{
               winner <<- FALSE
-              return(FALSE)
+              #return(FALSE)
             }
 
           })
 
-#Test Method
+#Test Method PlayGame
 PlayGame(goodDoor)
 PlayGame(goodDoor)
 PlayGame(goodDoor)
+
+
+## Part 3 Simulation
+# Simulate with Switch = True
+
+debug(PlayGame)
